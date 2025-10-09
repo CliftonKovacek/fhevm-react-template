@@ -1,0 +1,203 @@
+.connectCard {
+  background: white;
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.connectCard h2 {
+  color: #667eea;
+  margin-bottom: 1rem;
+}
+
+.connectCard p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.info {
+  text-align: left;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.info p {
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.votingCard {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  width: 100%;
+}
+
+.accountInfo {
+  background: #f0f4ff;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #667eea;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.votingCard h2 {
+  color: #667eea;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.proposalSection {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  border-left: 4px solid #667eea;
+}
+
+.proposalTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0.5rem 0;
+}
+
+.proposalDescription {
+  color: #666;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+}
+
+.voteButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.voteButton {
+  background: #f8f9fa;
+  color: #333;
+  padding: 1.5rem;
+  font-size: 1.1rem;
+  border: 2px solid #e0e0e0;
+  transition: all 0.2s;
+}
+
+.voteButton:hover:not(:disabled) {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+.voteButton.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+.submitButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  width: 100%;
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.status {
+  background: #f0f4ff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  color: #667eea;
+  text-align: center;
+  font-weight: 500;
+}
+
+.error {
+  background: #fee;
+  color: #c33;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #fcc;
+}
+
+.privacyInfo {
+  background: #f0fdf4;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+  border-left: 4px solid #10b981;
+}
+
+.privacyInfo h4 {
+  color: #10b981;
+  margin-bottom: 1rem;
+}
+
+.privacyInfo ul {
+  list-style: none;
+  padding: 0;
+}
+
+.privacyInfo li {
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.sdkInfo {
+  background: #2d2d2d;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.sdkInfo h4 {
+  color: #667eea;
+  margin-bottom: 1rem;
+}
+
+.sdkInfo pre {
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+.sdkInfo code {
+  background: none;
+  color: #f8f8f2;
+}
+
+@media (max-width: 600px) {
+  .voteButtons {
+    grid-template-columns: 1fr;
+  }
+
+  .votingCard {
+    padding: 1.5rem;
+  }
+
+  .connectCard {
+    padding: 2rem;
+  }
+}
