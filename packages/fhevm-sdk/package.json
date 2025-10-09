@@ -1,59 +1,77 @@
 {
-  "name": "@fhevm-sdk",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
+  "name": "@fhevm/sdk",
+  "version": "1.0.0",
+  "description": "Universal SDK for building confidential dApps with FHEVM - framework agnostic and developer friendly",
   "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "src/index.ts",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "default": "./dist/index.js"
-    },
-    "./core": {
-      "types": "./src/core/index.ts",
-      "default": "./dist/core/index.js"
-    },
-    "./storage": {
-      "types": "./src/storage/index.ts",
-      "default": "./dist/storage/index.js"
-    },
-    "./types": {
-      "types": "./src/fhevmTypes.ts",
-      "default": "./dist/fhevmTypes.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./react": {
-      "types": "./src/react/index.ts",
-      "default": "./dist/react/index.js"
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.js",
+      "types": "./dist/react.d.ts"
+    },
+    "./vue": {
+      "import": "./dist/vue.mjs",
+      "require": "./dist/vue.js",
+      "types": "./dist/vue.d.ts"
     }
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "watch": "tsc -p tsconfig.json --watch",
-    "clean": "rm -rf dist",
-    "test": "vitest run --coverage",
-    "test:watch": "vitest"
+    "build": "tsup src/index.ts src/react.ts src/vue.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "fhevm",
+    "zama",
+    "encryption",
+    "privacy",
+    "sdk",
+    "react",
+    "vue",
+    "blockchain",
+    "ethereum",
+    "web3",
+    "confidential",
+    "homomorphic-encryption"
+  ],
+  "author": "FHEVM SDK Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
   },
   "dependencies": {
-    "idb": "^8.0.3"
-  },
-  "peerDependencies": {
-    "@fhevm/mock-utils": "^0.1.0",
-    "@zama-fhe/relayer-sdk": "^0.2.0",
-    "ethers": "^6.13.4",
-    "react": "^18.0.0 || ^19.0.0"
+    "fhevmjs": "^0.5.0",
+    "ethers": "^6.13.1"
   },
   "devDependencies": {
-    "@types/node": "~18.19.50",
-    "@types/react": "~19.0.7",
-    "@vitest/coverage-v8": "2.1.9",
-    "@zama-fhe/relayer-sdk": "0.2.0",
-    "ethers": "^6.13.7",
-    "fake-indexeddb": "~6.0.0",
-    "jsdom": "^27.0.0",
-    "react": "~19.0.0",
-    "typescript": "~5.8.2",
-    "vitest": "~2.1.8"
+    "@types/node": "^20.14.11",
+    "@types/react": "^18.3.3",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.0",
+    "eslint": "^8.57.0"
   }
 }
