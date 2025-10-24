@@ -7,7 +7,7 @@ Simple, consistent, and developer-friendly - just like wagmi, but for encrypted 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Zama FHEVM](https://img.shields.io/badge/FHEVM-Zama-brightgreen)](https://www.zama.ai/fhevm)
 
-**📖 [Full Documentation](./packages/fhevm-sdk/README.md)** | **🎥 [Video Demo](#-video-demonstration)** | **🚀 [Quick Start](#-quick-start)**
+**📖 [Full Documentation](./packages/fhevm-sdk/README.md)** | **🎥 [Video Demo demo.mp4]** | **🚀 [Quick Start](#-quick-start)**
 
 ---
 
