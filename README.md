@@ -1,6 +1,6 @@
 # 🔐 Universal FHEVM SDK
 
-**Framework-agnostic SDK for building confidential dApps with Zama's FHEVM**
+**Framework-agnostic SDK for building confidential applications with Zama's FHEVM**
 
 Simple, consistent, and developer-friendly - just like wagmi, but for encrypted data.
 
@@ -13,7 +13,7 @@ Simple, consistent, and developer-friendly - just like wagmi, but for encrypted 
 
 ## 🌟 What is This?
 
-The **Universal FHEVM SDK** is a framework-agnostic toolkit that makes building privacy-preserving dApps **ridiculously easy**. It wraps Zama's Fully Homomorphic Encryption (FHE) technology into a simple, developer-friendly API.
+The **Universal FHEVM SDK** is a framework-agnostic toolkit that makes building privacy-preserving applications **ridiculously easy**. It wraps Zama's Fully Homomorphic Encryption (FHE) technology into a simple, developer-friendly API.
 
 ### 🔐 Core Concept: Fully Homomorphic Encryption (FHE)
 
@@ -27,7 +27,7 @@ The **Universal FHEVM SDK** is a framework-agnostic toolkit that makes building 
 
 Our showcase application demonstrates **privacy-preserving environmental governance**:
 
-**Live Demo**: https://fhe-environmental-voting.vercel.app/
+**Live Demo**: Available at deployment URL
 
 **Use Case**: Community members vote on environmental proposals (renewable energy projects, conservation initiatives, sustainability policies) with complete privacy:
 - ✅ Votes are encrypted before leaving the browser
@@ -42,7 +42,7 @@ This is impossible with traditional blockchain transparency, but FHE makes it si
 
 ## 💻 SDK Overview
 
-The **Universal FHEVM SDK** makes building privacy-preserving dApps **ridiculously easy**:
+The **Universal FHEVM SDK** makes building privacy-preserving applications **ridiculously easy**:
 
 ```typescript
 // Before: Complex setup with scattered dependencies
@@ -63,7 +63,7 @@ const encrypted = await sdk.encryptU8(42, contractAddress);
 await contract.submitValue(encrypted.data, encrypted.proof);
 ```
 
-**That's it. 4 lines to go from zero to encrypted dApp.**
+**That's it. 4 lines to go from zero to encrypted application.**
 
 ---
 
@@ -211,13 +211,20 @@ fhevm-sdk/
 │   ├── environmental-voting/   # 🌱 Real-world example
 │   │   ├── contracts/          # Smart contracts with FHEVM
 │   │   ├── scripts/            # Deployment & interaction
-│   │   ├── test/               # 57+ tests, 95% coverage
+│   │   ├── test/               # Comprehensive test coverage
 │   │   └── README.md
 │   │
-│   └── nextjs-demo/            # ⚡ Next.js integration (required)
-│       ├── pages/
-│       ├── components/
-│       └── README.md
+│   └── nextjs-demo/            # ⚡ Next.js integration demo
+│       ├── pages/              # Next.js pages (_app.tsx, index.tsx)
+│       ├── components/         # React components (ConnectWallet, VotingInterface)
+│       ├── styles/             # CSS modules (globals, Home, Components)
+│       ├── lib/                # Utility functions
+│       ├── public/             # Static assets
+│       ├── .env.example        # Environment variables template
+│       ├── next.config.js      # Next.js configuration
+│       ├── tsconfig.json       # TypeScript configuration
+│       ├── package.json        # Dependencies
+│       └── README.md           # Next.js demo documentation
 │
 ├── package.json                # Root workspace config
 ├── README.md                   # This file
@@ -235,8 +242,8 @@ fhevm-sdk/
 - **[Migration Guide](./docs/MIGRATION.md)** - From fhevmjs to SDK
 
 ### Examples
-- **[Environmental Voting](./examples/environmental-voting/README.md)** - Real-world governance example
-- **[Next.js Demo](./examples/nextjs-demo/README.md)** - Full Next.js integration
+- **[Environmental Voting](./examples/environmental-voting/README.md)** - Real-world governance example with comprehensive smart contracts
+- **[Next.js Demo](./examples/nextjs-demo/README.md)** - Complete Next.js integration with React hooks and components
 
 ### Zama Resources
 - **[Zama FHEVM Docs](https://docs.zama.ai/fhevm)** - Official FHEVM documentation
@@ -477,17 +484,28 @@ await contract.submitValue(encrypted.data, encrypted.proof);
 
 ---
 
-## 🌐 Live Demo & Repository
+## 🌐 Repository & Examples
 
 ### Environmental Voting Example
-**Live Application**: https://fhe-environmental-voting.vercel.app/
-
 Experience the privacy-preserving environmental governance system built with FHE technology. Cast encrypted votes on environmental proposals where individual votes remain private until results are revealed.
 
-### Repository
-**GitHub**: https://github.com/CliftonKovacek/fhevm-react-template
+**Features**:
+- Complete smart contract implementation with FHEVM
+- Comprehensive test suite
+- Deployment scripts for Sepolia testnet
+- Privacy-preserving vote aggregation
 
-Full source code including SDK implementation and examples.
+### Next.js Integration Demo
+Full-featured Next.js application demonstrating SDK integration:
+- React hooks (`useFhevm`, `useEncrypt`, `useDecrypt`, `useAccount`)
+- Wallet connection component
+- Encrypted voting interface
+- TypeScript support
+- Responsive design
+- Production-ready configuration
+
+### Repository
+Full source code including SDK implementation and complete examples.
 
 ---
 
@@ -524,8 +542,6 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 
 ## 🔗 Links
 
-- **GitHub Repository**: https://github.com/CliftonKovacek/fhevm-react-template
-- **Live Demo**: https://fhe-environmental-voting.vercel.app/
 - **Demo Video**: Download `demo.mp4` from repository
 - **Zama FHEVM Docs**: https://docs.zama.ai/fhevm
 - **Zama Discord**: https://discord.gg/zama
@@ -534,9 +550,8 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 
 ## 📞 Support
 
-- **GitHub Issues**: [Report bugs](https://github.com/CliftonKovacek/fhevm-react-template/issues)
-- **Discussions**: [Ask questions](https://github.com/CliftonKovacek/fhevm-react-template/discussions)
 - **Zama Discord**: [Community support](https://discord.gg/zama)
+- **FHEVM Documentation**: [Official docs](https://docs.zama.ai/fhevm)
 
 ---
 
@@ -549,9 +564,7 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 ## 🚀 Get Started Now
 
 ```bash
-# Clone and install
-git clone https://github.com/CliftonKovacek/fhevm-react-template.git
-cd fhevm-react-template
+# Install dependencies
 npm install
 
 # Build SDK
@@ -562,11 +575,14 @@ cd examples/environmental-voting
 npm test
 npm run deploy
 
-# Try the live demo
-# Visit: https://fhe-environmental-voting.vercel.app/
+# Run Next.js demo
+cd examples/nextjs-demo
+cp .env.example .env.local
+# Edit .env.local with your configuration
+npm run dev
 
 # Watch the demonstration video
 # Download and open demo.mp4
 ```
 
-**Start building privacy-preserving dApps in under 10 lines of code!**
+**Start building privacy-preserving applications in under 10 lines of code!**
