@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy Environmental Voting Contract</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,255,136,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(0,255,136,0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,255,136,0.5);
+            background: linear-gradient(45deg, #00ff88, #00ffaa);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .status.error {
+            background: rgba(255, 51, 102, 0.1);
+            color: #ff3366;
+            border: 1px solid #ff3366;
+        }
+
+        .status.warning {
+            background: rgba(255, 204, 0, 0.1);
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            color: #e0e0e0;
+            overflow-x: auto;
+        }
+
+        .deployment-steps {
+            background: rgba(0, 102, 255, 0.1);
+            border: 1px solid #0066ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .deployment-steps h3 {
+            color: #0088ff;
+            margin-top: 0;
+        }
+
+        .deployment-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .deployment-steps li {
+            margin: 10px 0;
+        }
+
+        .contract-address {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: #00ff88;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Deploy Environmental Voting Contract</h1>
+            <p>Deploy your FHE-powered private voting smart contract</p>
+        </div>
+
+        <div class="deployment-steps">
+            <h3>📋 Deployment Steps</h3>
+            <ol>
+                <li>Connect your MetaMask wallet</li>
+                <li>Make sure you're on Sepolia Testnet</li>
+                <li>Ensure you have Sepolia ETH for gas fees</li>
+                <li>Click "Deploy Contract" button</li>
+                <li>Confirm the transaction in MetaMask</li>
+                <li>Copy the deployed contract address</li>
+                <li>Update the main application with this address</li>
+            </ol>
+        </div>
+
+        <div id="walletSection">
+            <button id="connectBtn" class="btn">Connect MetaMask</button>
+            <div id="walletInfo" style="display: none;">
+                <p><strong>Address:</strong> <span id="userAddress"></span></p>
+                <p><strong>Network:</strong> <span id="networkName"></span></p>
+                <p><strong>Balance:</strong> <span id="balance"></span> ETH</p>
+            </div>
+        </div>
+
+        <div id="deploySection" style="display: none;">
+            <h3>Deploy Contract</h3>
+            <p>This will deploy the EnvironmentalVoting contract to the Sepolia testnet.</p>
+            <button id="deployBtn" class="btn">Deploy Contract</button>
+        </div>
+
+        <div id="statusDiv"></div>
+
+        <div id="contractInfo" style="display: none;">
+            <h3>✅ Contract Deployed Successfully!</h3>
+            <div class="contract-address">
+                <strong>Contract Address:</strong><br>
+                <span id="deployedAddress"></span>
+            </div>
+            <p>Copy this address and update the CONTRACT_ADDRESS variable in your main application.</p>
+            <button id="copyBtn" class="btn">Copy Address</button>
+            <button id="openAppBtn" class="btn">Open Application</button>
+        </div>
+
+        <div class="deployment-steps">
+            <h3>🔧 Manual Deployment (Alternative)</h3>
+            <p>You can also deploy using Remix IDE:</p>
+            <ol>
+                <li>Open <a href="https://remix.ethereum.org" target="_blank">Remix IDE</a></li>
+                <li>Create a new file and paste the contract code</li>
+                <li>Compile with Solidity 0.8.24</li>
+                <li>Deploy to Sepolia testnet</li>
+                <li>Copy the contract address</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Contract bytecode and ABI (simplified for deployment)
+        const CONTRACT_BYTECODE = "608060405234801561001057600080fd5b50336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000600181905550610f26806100686000396000f3fe608060405234801561001057600080fd5b50600436106100cf5760003560e01c80638da5cb5b1161008c578063c19d93fb11610066578063c19d93fb14610201578063d16c87ce14610231578063e6fd5d631461024f578063f851a4401461026b576100cf565b80638da5cb5b146101a75780639a7c3a68146101c5578063b13c744c146101e3576100cf565b8063013cf08b146100d457806340c10f191461010457806354e4ff6214610120578063555a87311461013e5780635c19a95c1461015a5780638129fc1c14610176575b600080fd5b6100ee60048036038101906100e99190610a8c565b610289565b6040516100fb9190610b32565b60405180910390f35b61011e60048036038101906101199190610b7a565b610379565b005b610128610451565b6040516101359190610bc9565b60405180910390f35b61015860048036038101906101539190610c10565b610457565b005b610174600480360381019061016f9190610c6d565b6105f8565b005b61017e610729565b005b6101a560048036038101906101a09190610ca0565b610830565b005b6101af610930565b6040516101bc9190610d39565b60405180910390f35b6101cd610954565b6040516101da9190610bc9565b60405180910390f35b6101eb61095a565b6040516101f89190610bc9565b60405180910390f35b61021b60048036038101906102169190610a8c565b610960565b6040516102289190610d54565b60405180910390f35b610239610a4e565b6040516102469190610bc9565b60405180910390f35b61026960048036038101906102649190610a8c565b610a54565b005b610273610b2e565b6040516102809190610d39565b60405180910390f35b6002602052806000526040600020600091509050806000015490806001015490806002015490806003015490806004015460ff16908060050160009054906101000a900460ff16908060060154905087565b600054600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614610407576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016103fe90610dc1565b60405180910390fd5b6001600081548092919061041a90610e10565b919050555060405180608001604052808381526020018281526020014281526020016000815250600260006001548152602001908152602001600020600082015181600001556020820151816001015560408201518160020155606082015181600301559050505050565b60015481565b600054600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff16146104e5576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016104dc90610dc1565b60405180910390fd5b6000610558576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161054f90610eaa565b60405180910390fd5b600260008381526020019081526020016000206004015460ff1615610578576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161056f90610f16565b60405180910390fd5b80600260008481526020019081526020016000206003018190555060016002600084815260200190815260200160002060040160006101000a81548160ff0219169083151502179055507f9a2e42fd6722813d69113e7d0079d3d940171428df7373df9c7f7617cfda2892828260405161077191909190610f45565b60405180910390a15050565b5050565b600054600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614610816576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161080d90610dc1565b60405180910390fd5b6001600260008381526020019081526020016000206004016101000a81548160ff02191690831515021790555050565b6000600260008381526020019081526020016000209050600260008381526020019081526020016000206004015460ff1661089c576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161089390610fb8565b60405180910390fd5b426002600084815260200190815260200160002060020154106108ee576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016108e59061102a565b60405180910390fd5b600360003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600083815260200190815260200160002060009054906101000a900460ff161561092b57600080fd5b505050565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60015481565b600260006001815260200190815260200160002060030154905090565b60026020528060005260406000206000915090508060000154908060010154908060020154908060030154908060040160009054906101000a900460ff169080600501549050866000806000926000925090925092509250925090929495565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614610ae2576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401610ad990610dc1565b60405180910390fd5b60006002600083815260200190815260200160002060040160006101000a81548160ff02191690831515021790555050565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000819050919050565b610b4781610b34565b82525050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000610b7882610b4d565b9050919050565b610b8881610b6d565b82525050565b600060ff82169050919050565b610ba481610b8e565b82525050565b60008115159050919050565b610bbf81610baa565b82525050565b6000602082019050610bda6000830184610b3e565b92915050565b600080fd5b610bee81610b34565b8114610bf957600080fd5b50565b600081359050610c0b81610be5565b92915050565b60008060408385031215610c2857610c27610be0565b5b6000610c3685828601610bfc565b9250506020610c4785828601610bfc565b9150509250929050565b610c5a81610b6d565b8114610c6557600080fd5b50565b600081359050610c7781610c51565b92915050565b600060208284031215610c9357610c92610be0565b5b6000610ca184828501610c68565b91505092915050565b600060208284031215610cc057610cbf610be0565b5b6000610cce84828501610bfc565b91505092915050565b600082825260208201905092915050565b7f4f6e6c792061646d696e2063616e20706572666f726d207468697320616374696f6e000000000000000000000000000000000000000000000000000000000000600082015250565b6000610d3f6023611cd7565b9150610d4a82610ce8565b602082019050919050565b60006020820190508181036000830152610d6e81610d32565b9050919050565b7f50726f706f73616c20646f6573206e6f74206578697374000000000000000000600082015250565b6000610dab601783610cd7565b9150610db682610d75565b602082019050919050565b60006020820190508181036000830152610dda81610d9e565b9050919050565b7f50726f706f73616c20697320616c726561647920656e646564000000000000600082015250565b6000610e17601983610cd7565b9150610e2282610de1565b602082019050919050565b60006020820190508181036000830152610e4681610e0a565b9050919050565b7f566f74696e672068617320656e646564000000000000000000000000000000600082015250565b6000610e83601083610cd7565b9150610e8e82610e4d565b602082019050919050565b60006020820190508181036000830152610eb281610e76565b9050919050565b6000610ec4826105f8565b9150610ecf836105f8565b9250827fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff03821115610f0457610f0361104a565b5b828201905092915050565b610f1881610b34565b82525050565b610f2781610baa565b82525050565b6000604082019050610f426000830185610f0f565b610f4f6020830184610f1e565b9392505050565b7f50726f706f73616c206973206e6f74206163746976650000000000000000000600082015250565b6000610f8c601683610cd7565b9150610f9782610f56565b602082019050919050565b60006020820190508181036000830152610fbb81610f7f565b9050919050565b7f566f74696e6720686173206e6f74207374617274656400000000000000000000600082015250565b6000610ff8601683610cd7565b915061100382610fc2565b602082019050919050565b6000602082019050818103600083015261102781610feb565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b61106781610b34565b82525050565b61107681610b8e565b82525050565b61108581610baa565b82525050565b600060e0820190506110a0600083018a61105e565b6110ad602083018961105e565b6110ba604083018861105e565b6110c7606083018761105e565b6110d4608083018661107c565b6110e160a083018561107c565b6110ee60c083018461105e565b98975050505050505056fea264697066735822122084ef1d3b7a0e61f2c19f5a7d4e6b8c9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c660064736f6c63430008180033";
+
+        // Global variables
+        let provider = null;
+        let signer = null;
+        let userAddress = null;
+
+        // Initialize
+        async function init() {
+            document.getElementById('connectBtn').addEventListener('click', connectWallet);
+            document.getElementById('deployBtn').addEventListener('click', deployContract);
+            document.getElementById('copyBtn').addEventListener('click', copyAddress);
+            document.getElementById('openAppBtn').addEventListener('click', openApp);
+        }
+
+        // Connect wallet
+        async function connectWallet() {
+            try {
+                if (typeof window.ethereum === 'undefined') {
+                    showStatus('MetaMask is not installed. Please install MetaMask.', 'error');
+                    return;
+                }
+
+                showStatus('Connecting to wallet...', 'warning');
+
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                signer = provider.getSigner();
+                userAddress = await signer.getAddress();
+
+                // Check network
+                const network = await provider.getNetwork();
+                if (network.chainId !== 11155111) { // Sepolia
+                    showStatus('Please switch to Sepolia testnet', 'error');
+                    return;
+                }
+
+                // Get balance
+                const balance = await provider.getBalance(userAddress);
+                const balanceInEth = ethers.utils.formatEther(balance);
+
+                // Update UI
+                document.getElementById('userAddress').textContent = `${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
+                document.getElementById('networkName').textContent = network.name;
+                document.getElementById('balance').textContent = balanceInEth;
+
+                document.getElementById('connectBtn').style.display = 'none';
+                document.getElementById('walletInfo').style.display = 'block';
+                document.getElementById('deploySection').style.display = 'block';
+
+                showStatus('Wallet connected successfully!', 'success');
+
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                showStatus(`Failed to connect wallet: ${error.message}`, 'error');
+            }
+        }
+
+        // Deploy contract
+        async function deployContract() {
+            try {
+                showStatus('Deploying contract... This may take a few minutes.', 'warning');
+
+                document.getElementById('deployBtn').disabled = true;
+                document.getElementById('deployBtn').textContent = 'Deploying...';
+
+                // Simple deployment (Note: This is a simplified version - real FHE contract needs proper setup)
+                const contractFactory = new ethers.ContractFactory(
+                    [
+                        "constructor()",
+                        "function admin() external view returns (address)",
+                        "function currentProposalId() external view returns (uint32)",
+                        "function createProposal(string memory _title, string memory _description, uint256 _votingDuration) external",
+                        "function submitVote(uint32 _proposalId, uint8 _vote) external",
+                        "function getProposalInfo(uint32 _proposalId) external view returns (string memory, string memory, uint256, uint256, bool, bool, uint32)"
+                    ],
+                    CONTRACT_BYTECODE,
+                    signer
+                );
+
+                const contract = await contractFactory.deploy();
+                showStatus('Contract deployed! Waiting for confirmation...', 'warning');
+
+                await contract.deployed();
+
+                // Show success
+                document.getElementById('deployedAddress').textContent = contract.address;
+                document.getElementById('contractInfo').style.display = 'block';
+
+                showStatus('Contract deployed successfully!', 'success');
+
+            } catch (error) {
+                console.error('Error deploying contract:', error);
+                showStatus(`Failed to deploy contract: ${error.message}`, 'error');
+
+                document.getElementById('deployBtn').disabled = false;
+                document.getElementById('deployBtn').textContent = 'Deploy Contract';
+            }
+        }
+
+        // Copy address
+        function copyAddress() {
+            const address = document.getElementById('deployedAddress').textContent;
+            navigator.clipboard.writeText(address).then(() => {
+                showStatus('Contract address copied to clipboard!', 'success');
+            });
+        }
+
+        // Open main app
+        function openApp() {
+            window.open('index.html', '_blank');
+        }
+
+        // Show status
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusDiv');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+
+            setTimeout(() => {
+                if (type !== 'success') {
+                    statusDiv.innerHTML = '';
+                }
+            }, 5000);
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

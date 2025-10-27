@@ -1,249 +1,159 @@
-# Environmental Voting - Example dApp
+# Environmental Voting Platform 🌱
 
-**Privacy-preserving environmental governance using `@fhevm/sdk`**
+## Overview
 
-This example demonstrates how to use the FHEVM SDK in a real-world voting application.
+Environmental Voting Platform is a decentralized application that leverages **Fully Homomorphic Encryption (FHE)** to enable anonymous and private voting on environmental initiatives. This privacy-preserving system ensures that voters can participate in crucial environmental decisions while maintaining complete anonymity and protecting their voting privacy.
 
----
+## Core Concepts
+
+### 🔐 Privacy-First Environmental Decision Making
+
+Our platform addresses the critical need for transparent yet private environmental governance. By utilizing FHE technology, we create a system where:
+
+- **Anonymous Participation**: Voters can participate without revealing their identity or voting preferences
+- **Encrypted Voting**: All votes are encrypted and remain private throughout the voting process
+- **Transparent Results**: While individual votes remain private, final results are publicly verifiable
+- **Democratic Governance**: Enables fair and unbiased environmental decision-making
+
+### 🌍 Environmental Focus
+
+The platform is specifically designed for environmental initiatives including:
+
+- **Carbon Emission Policies**: Vote on regulations and standards for emissions
+- **Renewable Energy Projects**: Community decisions on sustainable energy initiatives
+- **Conservation Efforts**: Funding and support decisions for environmental protection
+- **Climate Action Plans**: Strategic planning for climate change mitigation
+- **Sustainable Development**: Decisions on eco-friendly urban planning and development
+
+### ⚡ FHE Smart Contract Technology
+
+Our smart contract implementation uses Fully Homomorphic Encryption to:
+
+- Process encrypted votes without decrypting them
+- Perform calculations on encrypted data
+- Ensure vote privacy from submission to final tally
+- Maintain blockchain transparency while preserving individual privacy
 
 ## Features
 
-- ✅ **Encrypted voting using `@fhevm/sdk`** - Complete SDK integration
-- ✅ Admin-controlled proposal management
-- ✅ Time-bound voting periods
-- ✅ Result revelation with aggregated tallies
-- ✅ 57+ test cases, 95% coverage
-- ✅ **Two interaction modes**: Traditional Hardhat & SDK-based
+### 🗳️ Secure Voting System
+- Submit encrypted votes on environmental proposals
+- Real-time voting status tracking
+- Automatic proposal lifecycle management
 
----
+### 👥 Admin Panel
+- Create new environmental proposals
+- Set voting durations and parameters
+- Monitor voting progress and participation
 
-## Quick Start
+### 📊 Results Dashboard
+- View voting outcomes while maintaining voter privacy
+- Historical proposal tracking
+- Participation statistics
 
-```bash
-# Install dependencies (from root)
-npm install
+### 🔒 Privacy Protection
+- Zero-knowledge voting process
+- Encrypted ballot submission
+- Anonymous participation guarantee
 
-# Compile contracts
-npm run compile
+## Contract Information
 
-# Run tests
-npm run test
+**Deployed Contract Address**: `0x04CaEEC9D3d134faB1456CE1cf74B8248895DDcD`
 
-# Deploy to Sepolia
-npm run deploy
+**Network**: Ethereum Sepolia Testnet
 
-# Interact with SDK
-npm run interact:sdk
-```
+**Contract Type**: FHE-enabled Smart Contract for Private Voting
 
----
+## Live Demo
 
-## SDK Integration Example
+🌐 **Live Application**: [https://environmental-voting.vercel.app/](https://environmental-voting.vercel.app/)
 
-This example shows how to integrate `@fhevm/sdk` into a Hardhat project.
+## Demo Video
 
-### Two Interaction Modes
+📹 **Watch the Platform in Action**
 
-1. **Traditional Mode** (`scripts/interact.js`)
-   - Uses Hardhat + direct fhevmjs
-   - Run: `npm run interact`
+*[EnvironmentalVoting.mp4 showcasing the complete voting workflow, from proposal creation to anonymous vote submission and result revelation]*
 
-2. **SDK Mode** (`scripts/interact-sdk.js`) ⭐ **Recommended**
-   - Uses @fhevm/sdk for simplified interaction
-   - Run: `npm run interact:sdk`
-   - **Much simpler code!**
+## On-Chain Transaction Evidence
 
-### SDK Integration Steps
 
-#### 1. Install SDK
+EnvironmentalVoting.png
 
-```bash
-# Already included in package.json
-npm install @fhevm/sdk
-```
 
-#### 2. Initialize SDK (scripts/interact-sdk.js)
+## Technology Stack
 
-```javascript
-const { createFhevmSDK } = require('@fhevm/sdk');
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **Blockchain**: Ethereum (Sepolia Testnet)
+- **Smart Contracts**: Solidity with FHE integration
+- **Encryption**: Fully Homomorphic Encryption (FHE)
+- **Web3 Integration**: Ethers.js
+- **Wallet**: MetaMask compatibility
 
-// Simple one-liner setup
-const sdk = createFhevmSDK({
-  network: {
-    chainId: 11155111,
-    rpcUrl: process.env.SEPOLIA_RPC_URL
-  }
-});
+## Key Benefits
 
-await sdk.init();
-console.log('✅ SDK initialized');
-```
+### 🛡️ Privacy Preservation
+- **Anonymous Voting**: No link between voter identity and vote choice
+- **Encrypted Participation**: All interactions are cryptographically protected
+- **Zero-Knowledge Process**: Verify participation without revealing preferences
 
-#### 3. Encrypt Vote
+### 🌟 Environmental Impact
+- **Democratic Decision Making**: Enable community-driven environmental policies
+- **Transparent Governance**: Public visibility of environmental initiatives
+- **Inclusive Participation**: Lower barriers to environmental engagement
 
-```javascript
-// Get contract
-const contract = sdk.getContract(contractAddress, ABI);
+### ⚡ Technical Excellence
+- **Blockchain Security**: Immutable and tamper-proof voting records
+- **FHE Innovation**: Cutting-edge encryption for maximum privacy
+- **Scalable Architecture**: Efficient processing of large-scale voting
 
-// Encrypt vote (1 = yes, 0 = no)
-console.log('🔒 Encrypting your vote...');
-const encrypted = await sdk.encryptU8(1, contractAddress);
+## Environmental Use Cases
 
-// Submit encrypted vote
-await contract.vote(proposalId, encrypted.data, encrypted.proof);
-console.log('✅ Vote submitted - fully encrypted!');
-```
+### 🏭 Corporate Environmental Policies
+- Vote on company sustainability initiatives
+- Decide on carbon offset investments
+- Choose renewable energy providers
 
-#### 4. Decrypt Results (Admin only)
+### 🏘️ Community Environmental Projects
+- Local conservation funding decisions
+- Community garden and green space initiatives
+- Waste reduction and recycling programs
 
-```javascript
-// Admin reveals results
-const tx = await contract.revealResults(proposalId);
-await tx.wait();
+### 🏛️ Municipal Environmental Governance
+- City-wide environmental policy decisions
+- Public transportation sustainability measures
+- Urban planning with environmental considerations
 
-// Fetch revealed results (now public)
-const proposal = await contract.getProposal(proposalId);
-console.log(`Yes: ${proposal.yesVotes}`);
-console.log(`No: ${proposal.noVotes}`);
-```
+## Privacy Guarantees
 
-### Code Comparison
+Our FHE implementation ensures:
 
-**Before (Traditional):**
-```javascript
-// ~30 lines of boilerplate
-const instance = await createFhevmInstance({...});
-const encrypted = instance.encrypt_uint8(value);
-const proof = await instance.generateInputProof(...);
-// Complex setup, many steps
-```
+- **Vote Secrecy**: Individual votes cannot be revealed by anyone
+- **Coercion Resistance**: Impossible to prove how someone voted
+- **Result Integrity**: Final tallies are mathematically verifiable
+- **Participation Privacy**: Voting activity remains confidential
 
-**After (SDK):**
-```javascript
-// 3 lines total
-const sdk = createFhevmSDK(config);
-await sdk.init();
-const encrypted = await sdk.encryptU8(value, address);
-// That's it!
-```
+## Repository
 
-**10x simpler!**
+📁 **Source Code**: [https://github.com/CliftonKovacek/EnvironmentalVoting](https://github.com/CliftonKovacek/EnvironmentalVoting)
 
----
+## Future Roadmap
 
-## Project Structure
+- **Enhanced Proposal Types**: Support for complex environmental initiatives
+- **Multi-Chain Support**: Expansion to other blockchain networks
+- **Mobile Application**: Native mobile apps for increased accessibility
+- **Integration APIs**: Connect with environmental organizations and NGOs
+- **Advanced Analytics**: Environmental impact tracking and reporting
 
-```
-environmental-voting/
-├── contracts/
-│   └── EnvironmentalVoting.sol    # Smart contract with FHEVM
-├── scripts/
-│   ├── deploy.js                  # Deployment script
-│   └── interact.js                # SDK integration example
-├── test/
-│   └── EnvironmentalVoting.test.js
-├── hardhat.config.js
-├── .env.example
-└── README.md
-```
+## Contributing
 
----
-
-## Smart Contract
-
-```solidity
-// Using FHEVM types
-import "@fhevm/solidity/contracts/TFHE.sol";
-
-contract EnvironmentalVoting {
-    struct Proposal {
-        string title;
-        euint8 yesVotes;  // Encrypted yes votes
-        euint8 noVotes;   // Encrypted no votes
-        // ...
-    }
-
-    function vote(
-        uint256 proposalId,
-        einput encryptedVote,
-        bytes calldata inputProof
-    ) external {
-        euint8 vote = TFHE.asEuint8(encryptedVote, inputProof);
-        // Homomorphic addition
-        proposal.yesVotes = TFHE.add(proposal.yesVotes, vote);
-    }
-}
-```
-
----
-
-## Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run with gas reporting
-npm run test:gas
-
-# Expected: 57+ tests passing, 95% coverage
-```
-
----
-
-## Deployment
-
-```bash
-# 1. Configure environment
-cp .env.example .env
-# Edit .env with your values
-
-# 2. Deploy to Sepolia
-npm run deploy
-
-# 3. Verify contract
-npm run verify
-
-# 4. Interact with contract
-npm run interact
-```
-
----
-
-## Key Learnings
-
-### Using the SDK
-
-1. **Initialization is simple**
-   ```javascript
-   const sdk = createFhevmSDK(config);
-   await sdk.init();
-   ```
-
-2. **Encryption is one line**
-   ```javascript
-   const encrypted = await sdk.encryptU8(value, contractAddress);
-   ```
-
-3. **Decryption respects permissions**
-   ```javascript
-   // User decryption (with signature)
-   await sdk.requestDecryption(address, handle);
-
-   // Public decryption (no signature)
-   await sdk.publicDecrypt(address, handle);
-   ```
-
-### Best Practices
-
-- ✅ Always validate inputs before encryption
-- ✅ Use appropriate integer sizes (U8, U16, U32)
-- ✅ Handle encryption errors gracefully
-- ✅ Test both encrypted and decrypted values
-- ✅ Document which values are public vs private
-
----
+We welcome contributions from developers, environmental advocates, and privacy enthusiasts. Whether you're interested in smart contract development, frontend improvements, or environmental use case expansion, there are many ways to get involved.
 
 ## License
 
-MIT License
+This project is open source and available under the MIT License.
+
+---
+
+**Environmental Voting Platform** - Empowering anonymous environmental decision-making through advanced cryptographic privacy protection.
+
+*"Privacy-preserving democracy for a sustainable future"*

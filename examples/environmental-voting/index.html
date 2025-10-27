@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Voting Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0iI2ZmZiIgeD0iOCIgeT0iOCI+CjxwYXRoIGQ9Ik04IDBDOS4xIDAgMTAgMC45IDEwIDJWNkMxMCA3LjEgOS4xIDggOCA4SDJDMC45IDggMCA3LjEgMCA2VjJDMCAwLjkgMC45IDAgMiAwSDhaIiBmaWxsPSIjZmZmIi8+Cjwvc3ZnPgo8L3N2Zz4K">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: #00ff88;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,255,136,0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,255,136,0.2);
+            border-color: #00ff88;
+        }
+
+        .wallet-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(0,255,136,0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,255,136,0.5);
+            background: linear-gradient(45deg, #00ff88, #00ffaa);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #0066ff, #0088ff);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,102,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #0088ff, #00aaff);
+            box-shadow: 0 8px 25px rgba(0,102,255,0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff3366, #ff5588);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255,51,102,0.3);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(45deg, #ff5588, #ff77aa);
+            box-shadow: 0 8px 25px rgba(255,51,102,0.5);
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .status.error {
+            background: rgba(255, 51, 102, 0.1);
+            color: #ff3366;
+            border: 1px solid #ff3366;
+        }
+
+        .status.warning {
+            background: rgba(255, 204, 0, 0.1);
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+        }
+
+        .proposal {
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(26, 26, 26, 0.6);
+        }
+
+        .proposal.active {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .proposal.ended {
+            border-color: #ff3366;
+            background: rgba(255, 51, 102, 0.05);
+        }
+
+        .proposal h3 {
+            color: #e0e0e0;
+            margin-bottom: 10px;
+        }
+
+        .proposal-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            color: #e0e0e0;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00ff88;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .vote-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #333;
+            border-top: 3px solid #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .network-info {
+            background: rgba(0, 102, 255, 0.1);
+            border: 1px solid #0066ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #0088ff;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .vote-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Environmental Voting Platform</h1>
+            <p>Private and Secure Voting Using Fully Homomorphic Encryption</p>
+        </div>
+
+        <div class="card wallet-section">
+            <h2>Connect Your Wallet</h2>
+            <div id="walletStatus">
+                <button id="connectBtn" class="btn">Connect MetaMask</button>
+            </div>
+            <div id="networkInfo" class="network-info hidden">
+                <strong>Network:</strong> <span id="networkName"></span><br>
+                <strong>Address:</strong> <span id="userAddress"></span>
+            </div>
+        </div>
+
+        <div id="adminSection" class="card hidden">
+            <h2>📋 Admin Panel - Create Proposal</h2>
+            <form id="createProposalForm">
+                <div class="form-group">
+                    <label for="proposalTitle">Proposal Title</label>
+                    <input type="text" id="proposalTitle" placeholder="Enter proposal title" required>
+                </div>
+                <div class="form-group">
+                    <label for="proposalDescription">Description</label>
+                    <textarea id="proposalDescription" rows="4" placeholder="Describe the environmental proposal in detail" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="votingDuration">Voting Duration</label>
+                    <select id="votingDuration" required>
+                        <option value="">Select duration</option>
+                        <option value="3600">1 Hour</option>
+                        <option value="21600">6 Hours</option>
+                        <option value="86400">1 Day</option>
+                        <option value="259200">3 Days</option>
+                        <option value="604800">1 Week</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Create Proposal</button>
+            </form>
+        </div>
+
+        <div id="configSection" class="card">
+            <h2>⚙️ Contract Configuration</h2>
+            <div class="form-group">
+                <label for="contractAddress">Contract Address</label>
+                <input type="text" id="contractAddress" placeholder="Enter deployed contract address (0x...)" value="">
+                <button id="setContractBtn" class="btn">Set Contract Address</button>
+            </div>
+            <div class="status warning">
+                <p><strong>Don't have a contract?</strong> <a href="deploy.html" target="_blank" class="btn">Deploy Contract</a></p>
+            </div>
+        </div>
+
+        <div id="deploymentSection" class="card">
+            <h2>📋 Contract Deployment Guide</h2>
+            <div class="status warning">
+                <h3>How to Deploy the Environmental Voting Contract</h3>
+                <ol>
+                    <li><strong>Get Test ETH:</strong> Get Sepolia test ETH from a faucet</li>
+                    <li><strong>Deploy Contract:</strong> Use Remix IDE to deploy the EnvironmentalVoting.sol contract</li>
+                    <li><strong>Update Address:</strong> Copy the deployed contract address and update the CONTRACT_ADDRESS variable in this HTML file</li>
+                    <li><strong>Refresh Page:</strong> Reload the page to connect to your deployed contract</li>
+                </ol>
+                <p><strong>Contract File:</strong> contracts/EnvironmentalVoting.sol</p>
+                <p><strong>Network:</strong> Ethereum Sepolia Testnet (for FHEVM compatibility)</p>
+            </div>
+        </div>
+
+        <div id="proposalsSection" class="card">
+            <h2>🗳️ Active Proposals</h2>
+            <div id="proposalsList">
+                <p>Loading proposals...</p>
+            </div>
+            <button id="refreshBtn" class="btn btn-secondary">Refresh Proposals</button>
+        </div>
+
+        <div id="resultsSection" class="card">
+            <h2>📊 Results</h2>
+            <div id="resultsList">
+                <p>No results available</p>
+            </div>
+        </div>
+
+        <div id="statusDiv"></div>
+    </div>
+
+    <script>
+        // Contract configuration - Update this with your deployed contract address
+        let CONTRACT_ADDRESS = '0x04CaEEC9D3d134faB1456CE1cf74B8248895DDcD'; // Enter your deployed contract address here
+        const CONTRACT_ABI = [
+            "function admin() external view returns (address)",
+            "function currentProposalId() external view returns (uint32)",
+            "function createProposal(string memory _title, string memory _description, uint256 _votingDuration) external",
+            "function submitVote(uint32 _proposalId, uint8 _vote) external",
+            "function revealResults(uint32 _proposalId) external",
+            "function getProposalInfo(uint32 _proposalId) external view returns (string memory title, string memory description, uint256 startTime, uint256 endTime, bool active, bool resultsRevealed, uint32 totalVoters)",
+            "function hasUserVoted(uint32 _proposalId, address _user) external view returns (bool)",
+            "function isVotingActive(uint32 _proposalId) external view returns (bool)",
+            "function getActiveProposals() external view returns (uint32[] memory)",
+            "function endProposal(uint32 _proposalId) external",
+            "event ProposalCreated(uint32 indexed proposalId, string title, uint256 startTime, uint256 endTime)",
+            "event VoteSubmitted(address indexed voter, uint32 indexed proposalId)",
+            "event ResultsRevealed(uint32 indexed proposalId, uint32 yesVotes, uint32 noVotes)",
+            "event ProposalEnded(uint32 indexed proposalId)"
+        ];
+
+        // Global variables
+        let provider = null;
+        let signer = null;
+        let contract = null;
+        let userAddress = null;
+
+        // Initialize the application
+        async function init() {
+            if (typeof window.ethereum !== 'undefined') {
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                setupEventListeners();
+
+                // Check if contract address is set
+                if (!CONTRACT_ADDRESS || CONTRACT_ADDRESS === '') {
+                    showStatus('⚠️ Contract address not configured. Please update CONTRACT_ADDRESS in the code.', 'error');
+                    document.getElementById('proposalsList').innerHTML = `
+                        <div class="status error">
+                            <h3>Contract Not Configured</h3>
+                            <p>To use this application:</p>
+                            <ol>
+                                <li>Deploy the EnvironmentalVoting smart contract</li>
+                                <li>Update the CONTRACT_ADDRESS variable in the HTML file</li>
+                                <li>Refresh the page</li>
+                            </ol>
+                            <p><strong>Current Contract Address:</strong> ${CONTRACT_ADDRESS || 'Not Set'}</p>
+                        </div>
+                    `;
+                    return;
+                } else {
+                    // Contract address is configured, hide config section and deployment section
+                    document.getElementById('configSection').style.display = 'none';
+                    document.getElementById('deploymentSection').style.display = 'none';
+                    showStatus(`✅ Contract configured at: ${CONTRACT_ADDRESS}`, 'success');
+                }
+
+                await checkConnection();
+            } else {
+                showStatus('MetaMask is not installed. Please install MetaMask to use this application.', 'error');
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('connectBtn').addEventListener('click', connectWallet);
+            document.getElementById('createProposalForm').addEventListener('submit', createProposal);
+            document.getElementById('refreshBtn').addEventListener('click', loadProposals);
+            document.getElementById('setContractBtn').addEventListener('click', setContractAddress);
+
+            // Listen for account changes
+            if (window.ethereum) {
+                window.ethereum.on('accountsChanged', (accounts) => {
+                    if (accounts.length === 0) {
+                        disconnectWallet();
+                    } else {
+                        checkConnection();
+                    }
+                });
+
+                window.ethereum.on('chainChanged', (chainId) => {
+                    window.location.reload();
+                });
+            }
+        }
+
+        // Check if wallet is already connected
+        async function checkConnection() {
+            try {
+                const accounts = await provider.listAccounts();
+                if (accounts.length > 0) {
+                    await connectWallet();
+                }
+            } catch (error) {
+                console.error('Error checking connection:', error);
+            }
+        }
+
+        // Connect wallet
+        async function connectWallet() {
+            try {
+                showStatus('Connecting to wallet...', 'warning');
+
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                signer = provider.getSigner();
+                userAddress = await signer.getAddress();
+
+                // Only create contract if address is provided
+                if (CONTRACT_ADDRESS && CONTRACT_ADDRESS !== '') {
+                    contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+                }
+
+                // Update UI
+                updateWalletUI();
+
+                if (contract) {
+                    await checkAdminStatus();
+                    await loadProposals();
+                    showStatus('Wallet connected successfully!', 'success');
+                } else {
+                    showStatus('Wallet connected! Please deploy a contract first.', 'warning');
+                    document.getElementById('proposalsList').innerHTML = `
+                        <div class="status warning">
+                            <h3>Contract Not Deployed</h3>
+                            <p>Please deploy the contract first using the deployment guide above, then update the CONTRACT_ADDRESS.</p>
+                            <a href="deploy.html" target="_blank" class="btn">Deploy Contract</a>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                showStatus(`Failed to connect wallet: ${error.message}`, 'error');
+            }
+        }
+
+
+        // Update wallet UI
+        async function updateWalletUI() {
+            const network = await provider.getNetwork();
+            document.getElementById('connectBtn').style.display = 'none';
+            document.getElementById('networkInfo').classList.remove('hidden');
+            document.getElementById('networkName').textContent = network.name;
+            document.getElementById('userAddress').textContent = `${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
+        }
+
+        // Check if user is admin
+        async function checkAdminStatus() {
+            try {
+                if (!contract) return;
+
+                const adminAddress = await contract.admin();
+                if (adminAddress.toLowerCase() === userAddress.toLowerCase()) {
+                    document.getElementById('adminSection').classList.remove('hidden');
+                    showStatus('Admin privileges detected - you can create proposals', 'success');
+                }
+            } catch (error) {
+                console.error('Error checking admin status:', error);
+                showStatus('Unable to verify admin status. Make sure you\'re connected to the correct network.', 'warning');
+            }
+        }
+
+        // Create proposal
+        async function createProposal(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('proposalTitle').value;
+            const description = document.getElementById('proposalDescription').value;
+            const duration = document.getElementById('votingDuration').value;
+
+            if (!title || !description || !duration) {
+                showStatus('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                showStatus('Creating proposal...', 'warning');
+
+                const tx = await contract.createProposal(title, description, parseInt(duration));
+                showStatus('Transaction submitted. Waiting for confirmation...', 'warning');
+
+                await tx.wait();
+                showStatus('Proposal created successfully!', 'success');
+
+                // Reset form
+                document.getElementById('createProposalForm').reset();
+                await loadProposals();
+
+            } catch (error) {
+                console.error('Error creating proposal:', error);
+                showStatus(`Failed to create proposal: ${error.message}`, 'error');
+            }
+        }
+
+        // Load proposals
+        async function loadProposals() {
+            try {
+                if (!contract) {
+                    document.getElementById('proposalsList').innerHTML = '<p>Please connect your wallet first</p>';
+                    return;
+                }
+
+                showStatus('Loading proposals...', 'warning');
+                const currentId = await contract.currentProposalId();
+                const proposalsList = document.getElementById('proposalsList');
+                proposalsList.innerHTML = '';
+
+                const currentIdNumber = Number(currentId);
+                if (currentIdNumber === 0) {
+                    proposalsList.innerHTML = `
+                        <div class="status warning">
+                            <h3>No Proposals Yet</h3>
+                            <p>No proposals have been created yet. If you are the admin, you can create the first proposal using the admin panel above.</p>
+                        </div>
+                    `;
+                    showStatus('No proposals available', 'warning');
+                    return;
+                }
+
+                for (let i = 1; i <= currentIdNumber; i++) {
+                    await loadProposal(i);
+                }
+
+                showStatus('Proposals loaded successfully', 'success');
+
+            } catch (error) {
+                console.error('Error loading proposals:', error);
+                const proposalsList = document.getElementById('proposalsList');
+                proposalsList.innerHTML = `
+                    <div class="status error">
+                        <h3>Failed to Load Proposals</h3>
+                        <p>Error: ${error.message}</p>
+                        <p>Please make sure:</p>
+                        <ul>
+                            <li>You're connected to the correct network</li>
+                            <li>The contract address is correct</li>
+                            <li>The contract is deployed</li>
+                        </ul>
+                    </div>
+                `;
+                showStatus(`Failed to load proposals: ${error.message}`, 'error');
+            }
+        }
+
+        // Load individual proposal
+        async function loadProposal(proposalId) {
+            try {
+                const [title, description, startTime, endTime, active, resultsRevealed, totalVoters] =
+                    await contract.getProposalInfo(proposalId);
+
+                const hasVoted = await contract.hasUserVoted(proposalId, userAddress);
+                const isActive = await contract.isVotingActive(proposalId);
+
+                const proposalDiv = document.createElement('div');
+                proposalDiv.className = `proposal ${isActive ? 'active' : 'ended'}`;
+
+                const startDate = new Date(Number(startTime) * 1000);
+                const endDate = new Date(Number(endTime) * 1000);
+                const now = new Date();
+
+                let status = '';
+                if (now < startDate) {
+                    status = 'Not Started';
+                } else if (now <= endDate && active) {
+                    status = 'Active';
+                } else {
+                    status = 'Ended';
+                }
+
+                proposalDiv.innerHTML = `
+                    <h3>Proposal #${proposalId}: ${title}</h3>
+                    <p><strong>Description:</strong> ${description}</p>
+                    <div class="proposal-meta">
+                        <div><strong>Status:</strong> ${status}</div>
+                        <div><strong>Total Voters:</strong> ${Number(totalVoters)}</div>
+                        <div><strong>Start:</strong> ${startDate.toLocaleString()}</div>
+                        <div><strong>End:</strong> ${endDate.toLocaleString()}</div>
+                        <div><strong>Your Vote:</strong> ${hasVoted ? 'Submitted' : 'Not Voted'}</div>
+                    </div>
+                    ${isActive && !hasVoted ? `
+                        <div class="vote-buttons">
+                            <button class="btn btn-secondary" onclick="submitVote(${proposalId}, 1)">✅ Vote Yes</button>
+                            <button class="btn btn-danger" onclick="submitVote(${proposalId}, 0)">❌ Vote No</button>
+                        </div>
+                    ` : ''}
+                    ${!active && resultsRevealed ? `
+                        <div class="status success">Results have been revealed for this proposal</div>
+                    ` : ''}
+                `;
+
+                document.getElementById('proposalsList').appendChild(proposalDiv);
+
+            } catch (error) {
+                console.error(`Error loading proposal ${proposalId}:`, error);
+            }
+        }
+
+        // Submit vote
+        async function submitVote(proposalId, vote) {
+            try {
+                showStatus('Submitting encrypted vote...', 'warning');
+
+                const tx = await contract.submitVote(proposalId, vote);
+                showStatus('Transaction submitted. Waiting for confirmation...', 'warning');
+
+                await tx.wait();
+                showStatus(`Vote submitted successfully! Your vote is encrypted and private.`, 'success');
+
+                await loadProposals();
+
+            } catch (error) {
+                console.error('Error submitting vote:', error);
+                showStatus(`Failed to submit vote: ${error.message}`, 'error');
+            }
+        }
+
+        // Disconnect wallet
+        function disconnectWallet() {
+            provider = null;
+            signer = null;
+            contract = null;
+            userAddress = null;
+
+            document.getElementById('connectBtn').style.display = 'inline-block';
+            document.getElementById('networkInfo').classList.add('hidden');
+            document.getElementById('adminSection').classList.add('hidden');
+            document.getElementById('proposalsList').innerHTML = '<p>Please connect your wallet to view proposals</p>';
+
+            showStatus('Wallet disconnected', 'warning');
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusDiv');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // Set contract address
+        async function setContractAddress() {
+            const addressInput = document.getElementById('contractAddress');
+            const newAddress = addressInput.value.trim();
+
+            if (!newAddress) {
+                showStatus('Please enter a contract address', 'error');
+                return;
+            }
+
+            if (!ethers.utils.isAddress(newAddress)) {
+                showStatus('Invalid contract address format', 'error');
+                return;
+            }
+
+            try {
+                CONTRACT_ADDRESS = newAddress;
+
+                if (signer) {
+                    contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                    // Test the contract by calling a simple function
+                    await contract.currentProposalId();
+
+                    await checkAdminStatus();
+                    await loadProposals();
+
+                    showStatus('Contract address updated successfully!', 'success');
+                    document.getElementById('configSection').style.display = 'none';
+                    document.getElementById('deploymentSection').style.display = 'none';
+                } else {
+                    showStatus('Contract address set. Please connect your wallet to continue.', 'warning');
+                }
+            } catch (error) {
+                console.error('Error setting contract address:', error);
+                showStatus(`Invalid contract or network error: ${error.message}`, 'error');
+                CONTRACT_ADDRESS = '';
+                contract = null;
+            }
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
