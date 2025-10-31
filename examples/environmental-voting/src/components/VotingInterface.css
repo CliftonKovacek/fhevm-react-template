@@ -1,0 +1,61 @@
+.voting-interface {
+  max-width: 800px;
+  margin: 30px auto;
+}
+
+.voting-interface h2 {
+  color: #00ff88;
+  margin-bottom: 20px;
+}
+
+.info-message {
+  background: rgba(0, 136, 255, 0.2);
+  border: 1px solid #0088ff;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin: 20px 0;
+  color: #66bbff;
+}
+
+.vote-prompt {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: #bbb;
+}
+
+.vote-privacy-note {
+  text-align: center;
+  color: #888;
+  font-size: 0.95rem;
+  margin-top: 20px;
+}
+
+.btn-yes {
+  background: linear-gradient(45deg, #00ff88, #00cc6a) !important;
+}
+
+.btn-no {
+  background: linear-gradient(45deg, #ff4444, #cc0000) !important;
+}
+
+.reveal-section {
+  text-align: center;
+  padding: 30px 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  margin-top: 30px;
+}
+
+.reveal-section p {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.results-note {
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+  margin-top: 20px;
+  font-style: italic;
+}
