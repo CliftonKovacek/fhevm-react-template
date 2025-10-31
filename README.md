@@ -175,7 +175,7 @@ function VoteButton() {
 }
 ```
 
-### Option 3: Vue (Coming Soon)
+### Option 3: Vue
 
 ```vue
 <script setup>
@@ -189,6 +189,13 @@ async function vote() {
   await contract.vote(encrypted.data, encrypted.proof);
 }
 </script>
+
+<template>
+  <div v-if="isInitialized">
+    <button @click="vote">Vote as {{ account }}</button>
+  </div>
+  <div v-else>Connecting...</div>
+</template>
 ```
 
 ---
@@ -207,28 +214,59 @@ fhevm-sdk/
 │       ├── dist/               # Built files
 │       └── README.md           # SDK documentation
 │
-├── examples/
-│   ├── environmental-voting/   # 🌱 Real-world example
+├── examples/                   # Example implementations (serve as templates)
+│   ├── environmental-voting/   # 🌱 Real-world governance example (React + Hardhat)
+│   │   ├── src/                # React application source
+│   │   │   ├── App.tsx         # Main application component
+│   │   │   ├── main.tsx        # Application entry point
+│   │   │   └── components/     # React components
+│   │   │       ├── Header.tsx
+│   │   │       ├── WalletConnect.tsx
+│   │   │       ├── CreateProposal.tsx
+│   │   │       ├── ProposalList.tsx
+│   │   │       └── VotingInterface.tsx
 │   │   ├── contracts/          # Smart contracts with FHEVM
 │   │   ├── scripts/            # Deployment & interaction
 │   │   ├── test/               # Comprehensive test coverage
+│   │   ├── vite.config.ts      # Vite configuration
+│   │   ├── tsconfig.json       # TypeScript configuration
+│   │   ├── index-react.html    # React version HTML entry
+│   │   ├── index.html          # Original static HTML (legacy)
 │   │   └── README.md
 │   │
-│   └── nextjs-demo/            # ⚡ Next.js integration demo
-│       ├── pages/              # Next.js pages (_app.tsx, index.tsx)
-│       ├── components/         # React components (ConnectWallet, VotingInterface)
-│       ├── styles/             # CSS modules (globals, Home, Components)
-│       ├── lib/                # Utility functions
-│       ├── public/             # Static assets
+│   └── nextjs-demo/            # ⚡ Next.js 13+ App Router demo
+│       ├── src/
+│       │   ├── app/            # Next.js 13+ App Router
+│       │   │   ├── layout.tsx  # Root layout with FHEProvider
+│       │   │   ├── page.tsx    # Home page
+│       │   │   ├── globals.css # Global styles
+│       │   │   └── api/        # API Routes
+│       │   │       ├── fhe/    # FHE operations endpoints
+│       │   │       └── keys/   # Key management endpoint
+│       │   ├── components/     # React components
+│       │   │   ├── ui/         # Base UI components
+│       │   │   ├── fhe/        # FHE-specific components
+│       │   │   └── examples/   # Use case examples
+│       │   ├── lib/            # Utility libraries
+│       │   │   ├── fhe/        # FHE client & server utilities
+│       │   │   └── utils/      # Helper functions
+│       │   ├── hooks/          # Custom React hooks
+│       │   └── types/          # TypeScript definitions
+│       ├── styles/             # Additional CSS modules
 │       ├── .env.example        # Environment variables template
 │       ├── next.config.js      # Next.js configuration
 │       ├── tsconfig.json       # TypeScript configuration
 │       ├── package.json        # Dependencies
 │       └── README.md           # Next.js demo documentation
 │
+├── docs/                       # Documentation
+│   ├── GETTING_STARTED.md      # Quick start guide
+│   └── MIGRATION.md            # Migration from fhevmjs
+│
 ├── package.json                # Root workspace config
 ├── README.md                   # This file
 ├── LICENSE                     # MIT License
+├── CONTRIBUTING.md             # Contribution guidelines
 └── VIDEO_DEMO_GUIDE.md         # Video demonstration guide
 ```
 
@@ -240,10 +278,19 @@ fhevm-sdk/
 - **[SDK API Reference](./packages/fhevm-sdk/README.md)** - Complete API documentation
 - **[Getting Started Guide](./docs/GETTING_STARTED.md)** - Step-by-step tutorial
 - **[Migration Guide](./docs/MIGRATION.md)** - From fhevmjs to SDK
+- **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute to the project
+- **[Video Demo Guide](./VIDEO_DEMO_GUIDE.md)** - Video demonstration guidelines
 
-### Examples
+### Examples & Templates
 - **[Environmental Voting](./examples/environmental-voting/README.md)** - Real-world governance example with comprehensive smart contracts
-- **[Next.js Demo](./examples/nextjs-demo/README.md)** - Complete Next.js integration with React hooks and components
+- **[Next.js Demo](./examples/nextjs-demo/README.md)** - Complete Next.js 13+ App Router integration with:
+  - FHE Provider setup
+  - API routes for server-side operations
+  - UI components (Button, Input, Card)
+  - FHE components (EncryptionDemo, ComputationDemo, KeyManager)
+  - Example use cases (Banking, Medical)
+  - Custom hooks (useEncryption, useComputation)
+  - Utility functions (security, validation)
 
 ### Zama Resources
 - **[Zama FHEVM Docs](https://docs.zama.ai/fhevm)** - Official FHEVM documentation
@@ -327,11 +374,13 @@ npm run test:sdk
 # Run all tests
 npm run test:all
 
-# Start environmental voting example
-npm run dev:environmental
+# Start environmental voting React app
+cd examples/environmental-voting
+npm run dev
 
 # Start Next.js demo
-npm run dev:nextjs
+cd examples/nextjs-demo
+npm run dev
 
 # Deploy environmental voting to Sepolia
 npm run deploy:environmental
@@ -490,18 +539,48 @@ await contract.submitValue(encrypted.data, encrypted.proof);
 Experience the privacy-preserving environmental governance system built with FHE technology. Cast encrypted votes on environmental proposals where individual votes remain private until results are revealed.
 
 **Features**:
-- Complete smart contract implementation with FHEVM
-- Comprehensive test suite
-- Deployment scripts for Sepolia testnet
-- Privacy-preserving vote aggregation
+- **React Application**: Full React + TypeScript + Vite setup with modern component architecture
+- **Smart Contracts**: Complete FHEVM smart contract implementation
+- **SDK Integration**: Uses @fhevm/sdk for all encryption/decryption operations
+- **Comprehensive Components**:
+  - Header, WalletConnect, CreateProposal
+  - ProposalList with real-time updates
+  - VotingInterface with encrypted voting
+- **Dual Interface**: Both React (index-react.html) and legacy static HTML (index.html)
+- **Test Suite**: Comprehensive contract testing
+- **Deployment Scripts**: Ready for Sepolia testnet
+- **Privacy-Preserving**: Vote aggregation without revealing individual votes
 
 ### Next.js Integration Demo
-Full-featured Next.js application demonstrating SDK integration:
+Full-featured Next.js 13+ App Router application demonstrating comprehensive SDK integration:
+
+**SDK Integration:**
 - React hooks (`useFhevm`, `useEncrypt`, `useDecrypt`, `useAccount`)
-- Wallet connection component
-- Encrypted voting interface
-- TypeScript support
-- Responsive design
+- FHE Provider with auto-connect
+- Custom hooks (`useEncryption`, `useComputation`)
+
+**API Routes:**
+- `/api/fhe` - Main FHE operations endpoint
+- `/api/fhe/encrypt` - Server-side encryption
+- `/api/fhe/decrypt` - Server-side decryption
+- `/api/fhe/compute` - Homomorphic computation
+- `/api/keys` - Key management
+
+**Components:**
+- Base UI: `Button`, `Input`, `Card`
+- FHE Operations: `EncryptionDemo`, `ComputationDemo`, `KeyManager`
+- Examples: `BankingExample`, `MedicalExample`
+- Wallet: `ConnectWallet`, `VotingInterface`
+
+**Utilities:**
+- Client/Server FHE operations
+- Security helpers (validation, sanitization)
+- Key management (generation, storage, export)
+
+**Complete App Router Structure:**
+- Layout with FHE Provider
+- API routes for server-side operations
+- Type-safe TypeScript throughout
 - Production-ready configuration
 
 ### Repository
@@ -570,13 +649,17 @@ npm install
 # Build SDK
 npm run build:sdk
 
-# Run environmental voting example
+# Run environmental voting React app
 cd examples/environmental-voting
-npm test
+npm install
+npm run dev  # Start React development server
+# Or to deploy contracts:
+npm run compile
 npm run deploy
 
 # Run Next.js demo
 cd examples/nextjs-demo
+npm install
 cp .env.example .env.local
 # Edit .env.local with your configuration
 npm run dev
